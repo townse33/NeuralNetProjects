@@ -28,7 +28,10 @@ class NeuralNet: #Generic class for defining neural networks
         self.finalIn = list() 
 
         for inputNum in inputList:
-            self.finalIn.append((inputNum-self.minNum)/(self.maxNum-self.minNum)) #Normalise data
+            if self.maxNum - self.minNum != 0:
+                self.finalIn.append((inputNum-self.minNum)/(self.maxNum-self.minNum)) #Normalise data
+            else:
+                self.finalIn.append(inputNum)
         
         self.hLayers = hiddenLayers #Number of hidden layers -> hLayers
         
@@ -72,11 +75,6 @@ class NeuralNet: #Generic class for defining neural networks
         self.wMatrix = self.weightList.copy()
         self.wMatrix.append(self.endWeights)
         self.wMatrix.insert(0,self.startWeights)
-
-        
-        noIn = len(self.inList) #Find lengths of matrix lists
-        noA = len(self.aList)
-        noW = len(self.weightList)
 
         deltaO = np.multiply(sigmoidPrime(self.out),(self.targetA-self.out)) #Hadamard product of output function deriv and error
         self.endWeights += self.learnRate * np.outer(self.aMatrix[-1].T,deltaO) #Adjust weights by learning rate, delta and activation values,
