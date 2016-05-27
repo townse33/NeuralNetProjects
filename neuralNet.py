@@ -91,14 +91,22 @@ class NeuralNet: #Generic class for defining neural networks
         self.startWeights += self.learnRate * np.dot(self.inputA.T,deltaI) #Updates starting weights
 
 
-    def train2(self,iterations=1): #Iterates backprop for given number of epochs
+    def train(self,iterations=1): #Iterates backprop for given number of epochs
 
         for i in range(iterations):
             self.backProp()
-                
 
+    def changeValues(self,inputs,targets): #Used to change values for inputs and their target outputs (MUST be lists)
+        self.inputL = inputs
+        self.targetL = targets
+
+        self.inputNo = len(self.inputL)
+        self.outputNo = len(self.targetL)
+
+        self.finalIn = self.inputL.copy()
+            
 test = NeuralNet([0.1,0.2,0.3,0.4,0.5],[0.1,0.2,0.3,0.4,0.5],5)
 
-test.train2(1000)
+test.train(1000)
 
 print(test.fowardProp())
