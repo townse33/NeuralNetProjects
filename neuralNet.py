@@ -105,7 +105,7 @@ class NeuralNet: #Generic class for defining neural networks
 
         self.finalIn = self.inputL.copy()
             
-test = NeuralNet([0.1,0.2,0.3,0.4,0.5],[0.1,0.2,0.3,0.4,0.5],5)
+test = NeuralNet([0.1,0.2,0.3,0.4,0.5],[0.2,0.3,0.4,0.5,0.6],5)
 
 test.train(1000)
 
