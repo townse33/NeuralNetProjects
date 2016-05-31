@@ -1,9 +1,11 @@
 import numpy as np
+import sys
+
 
 def sigmoid(x): #sigmoid activation function
-    return 1/(1+np.exp(-x))
+    return 1/(1+np.exp(-x+0.5))
 def sigmoidPrime(x): #sigmoid derivative
-    return x*(1-x)
+    return sigmoid(x+0.5)*(1-sigmoid(x+0.5))
 
 class NeuralNet: #Generic class for defining neural networks
 
@@ -13,11 +15,12 @@ class NeuralNet: #Generic class for defining neural networks
         self.inputNo = len(inputList) #Number of input nodes
         self.outputNo = len(targetList) #Number of output nodes
         
-        self.bias = 1 #Neuron bias
-        self.learnRate = 1 #Rate of learning for training
+        self.bias = 0 #Neuron bias
+        self.learnRate = 0.5 #Rate of learning for training
 
         self.inputL = inputList 
         self.targetL = targetList
+        self.dataList = list()
 
         rangeList = inputList.copy()
         rangeList.extend(targetList) #Compare all values, both training and input
@@ -88,23 +91,39 @@ class NeuralNet: #Generic class for defining neural networks
         deltaI = deltaN.dot(self.wMatrix[1].T)*sigmoidPrime(self.aMatrix[0]) #Final delta
         self.startWeights += self.learnRate * np.dot(self.inputA.T,deltaI) #Updates starting weights
 
-
-    def train(self,iterations=1): #Iterates backprop for given number of epochs
-
-        for i in range(iterations):
-            self.backProp()
-
     def changeValues(self,inputs,targets): #Used to change values for inputs and their target outputs (MUST be lists)
         self.inputL = inputs
         self.targetL = targets
 
-        self.inputNo = len(self.inputL)
+        if type(self.targetL) != list:
+            self.targetL = list()
+            self.targetL.append(targets)
+            
+        self.inputNo = len(self.finalIn)
         self.outputNo = len(self.targetL)
 
-        self.finalIn = self.inputL.copy()
+        self.finalIn = self.finalIn.copy()
+
+    def loadData(self,dataList):
+        self.dataList = dataList
+
+    def train(self,iterations=1): #Iterates backprop for given number of epochs
+        
+        if len(self.dataList) == 0:
+            for i in range(iterations):
+                self.backProp()
+        
+        else:
+            for i in range(iterations):
+                  for k in range(len(self.dataList[0])):
+                      self.changeValues(self.dataList[0][k],self.dataList[1][k])
+                      self.backProp()
+
+
             
-test = NeuralNet([0.1,0.2,0.3,0.4,0.5],[0.2,0.3,0.4,0.5,0.6],5)
+test = NeuralNet([0.1],[0.2],2)
 
 test.train(1000)
 
 print(test.fowardProp())
+
